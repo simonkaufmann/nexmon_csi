@@ -122,66 +122,59 @@ wlc_ioctl_hook(struct wlc_info *wlc, int cmd, char *arg, int len, void *wlc_if)
     argprintf_init(arg, len);
 
     switch(cmd) {
-        case 800:
-        {
-            //WL_ERROR(("MY HOOK\n"));
-            printf("MY HOOK\n");
-            ret = IOCTL_SUCCESS;
-            break;
-        }
         case 500:   // set csi_collect
         {
-            struct params {
-                uint16 chanspec;            // chanspec to tune to
-                uint8  csi_collect;         // trigger csi collect (1: on, 0: off)
-                uint8  core_nss_mask;       // coremask and spatialstream mask
-                uint8  use_pkt_filter;      // trigger first packet byte filter (1: on, 0: off)
-                uint8  first_pkt_byte;      // first packet byte to filter for
-                uint16 n_mac_addr;          // number of mac addresses to filter for (0: off, 1-4: on,use src_mac_0-3)
-                uint16 cmp_src_mac_0_0;     // filter src mac 0
-                uint16 cmp_src_mac_0_1;
-                uint16 cmp_src_mac_0_2;
-                uint16 cmp_src_mac_1_0;     // filter src mac 1
-                uint16 cmp_src_mac_1_1;
-                uint16 cmp_src_mac_1_2;
-                uint16 cmp_src_mac_2_0;     // filter src mac 2
-                uint16 cmp_src_mac_2_1;
-                uint16 cmp_src_mac_2_2;
-                uint16 cmp_src_mac_3_0;     // filter src mac 3
-                uint16 cmp_src_mac_3_1;
-                uint16 cmp_src_mac_3_2;
-                uint16 delay;               // delay between extractions in us
-            };
-            struct params *params = (struct params *) arg;
-            // deactivate scanning
-            set_scansuppress(wlc, 1);
-            // deactivate minimum power consumption
-            set_mpc(wlc, 0);
-            // set the channel
-            set_chanspec(wlc, params->chanspec);
-            // write shared memory
-            if (wlc->hw->up && len > 1) {
-                wlc_bmac_write_shm(wlc->hw, SHM_CSI_COLLECT * 2, params->csi_collect);
-                wlc_bmac_write_shm(wlc->hw, NSSMASK * 2, ((params->core_nss_mask)&0xf0)>>4);
-                wlc_bmac_write_shm(wlc->hw, COREMASK * 2, (params->core_nss_mask)&0x0f);
-                wlc_bmac_write_shm(wlc->hw, N_CMP_SRC_MAC * 2, params->n_mac_addr);
-                wlc_bmac_write_shm(wlc->hw, APPLY_PKT_FILTER * 2, params->use_pkt_filter);
-                wlc_bmac_write_shm(wlc->hw, PKT_FILTER_BYTE * 2, params->first_pkt_byte);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_0_0 * 2, params->cmp_src_mac_0_0);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_0_1 * 2, params->cmp_src_mac_0_1);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_0_2 * 2, params->cmp_src_mac_0_2);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_1_0 * 2, params->cmp_src_mac_1_0);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_1_1 * 2, params->cmp_src_mac_1_1);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_1_2 * 2, params->cmp_src_mac_1_2);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_2_0 * 2, params->cmp_src_mac_2_0);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_2_1 * 2, params->cmp_src_mac_2_1);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_2_2 * 2, params->cmp_src_mac_2_2);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_3_0 * 2, params->cmp_src_mac_3_0);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_3_1 * 2, params->cmp_src_mac_3_1);
-                wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_3_2 * 2, params->cmp_src_mac_3_2);
-                wlc_bmac_write_shm(wlc->hw, FIFODELAY * 2, params->delay);
+            // struct params {
+            //     uint16 chanspec;            // chanspec to tune to
+            //     uint8  csi_collect;         // trigger csi collect (1: on, 0: off)
+            //     uint8  core_nss_mask;       // coremask and spatialstream mask
+            //     uint8  use_pkt_filter;      // trigger first packet byte filter (1: on, 0: off)
+            //     uint8  first_pkt_byte;      // first packet byte to filter for
+            //     uint16 n_mac_addr;          // number of mac addresses to filter for (0: off, 1-4: on,use src_mac_0-3)
+            //     uint16 cmp_src_mac_0_0;     // filter src mac 0
+            //     uint16 cmp_src_mac_0_1;
+            //     uint16 cmp_src_mac_0_2;
+            //     uint16 cmp_src_mac_1_0;     // filter src mac 1
+            //     uint16 cmp_src_mac_1_1;
+            //     uint16 cmp_src_mac_1_2;
+            //     uint16 cmp_src_mac_2_0;     // filter src mac 2
+            //     uint16 cmp_src_mac_2_1;
+            //     uint16 cmp_src_mac_2_2;
+            //     uint16 cmp_src_mac_3_0;     // filter src mac 3
+            //     uint16 cmp_src_mac_3_1;
+            //     uint16 cmp_src_mac_3_2;
+            //     uint16 delay;               // delay between extractions in us
+            // };
+            // struct params *params = (struct params *) arg;
+            // // deactivate scanning
+            // set_scansuppress(wlc, 1);
+            // // deactivate minimum power consumption
+            // set_mpc(wlc, 0);
+            // // set the channel
+            // set_chanspec(wlc, params->chanspec);
+            // // write shared memory
+            // if (wlc->hw->up && len > 1) {
+            //     wlc_bmac_write_shm(wlc->hw, SHM_CSI_COLLECT * 2, params->csi_collect);
+            //     wlc_bmac_write_shm(wlc->hw, NSSMASK * 2, ((params->core_nss_mask)&0xf0)>>4);
+            //     wlc_bmac_write_shm(wlc->hw, COREMASK * 2, (params->core_nss_mask)&0x0f);
+            //     wlc_bmac_write_shm(wlc->hw, N_CMP_SRC_MAC * 2, params->n_mac_addr);
+            //     wlc_bmac_write_shm(wlc->hw, APPLY_PKT_FILTER * 2, params->use_pkt_filter);
+            //     wlc_bmac_write_shm(wlc->hw, PKT_FILTER_BYTE * 2, params->first_pkt_byte);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_0_0 * 2, params->cmp_src_mac_0_0);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_0_1 * 2, params->cmp_src_mac_0_1);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_0_2 * 2, params->cmp_src_mac_0_2);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_1_0 * 2, params->cmp_src_mac_1_0);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_1_1 * 2, params->cmp_src_mac_1_1);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_1_2 * 2, params->cmp_src_mac_1_2);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_2_0 * 2, params->cmp_src_mac_2_0);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_2_1 * 2, params->cmp_src_mac_2_1);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_2_2 * 2, params->cmp_src_mac_2_2);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_3_0 * 2, params->cmp_src_mac_3_0);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_3_1 * 2, params->cmp_src_mac_3_1);
+            //     wlc_bmac_write_shm(wlc->hw, CMP_SRC_MAC_3_2 * 2, params->cmp_src_mac_3_2);
+            //     wlc_bmac_write_shm(wlc->hw, FIFODELAY * 2, params->delay);
                 ret = IOCTL_SUCCESS;
-            }
+            //}
             break;
         }
         case 501:   // get csi collect
