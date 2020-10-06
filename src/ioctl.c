@@ -122,6 +122,13 @@ wlc_ioctl_hook(struct wlc_info *wlc, int cmd, char *arg, int len, void *wlc_if)
     argprintf_init(arg, len);
 
     switch(cmd) {
+        case 800:
+        {
+            //WL_ERROR(("MY HOOK\n"));
+            printf("MY HOOK\n");
+            ret = IOCTL_SUCCESS;
+            break;
+        }
         case 500:   // set csi_collect
         {
             struct params {
